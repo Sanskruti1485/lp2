@@ -1,0 +1,72 @@
+import java.util.*;
+import java.util.LinkedList;
+
+class BFSGraph {
+    private int vertices;
+    private LinkedList<Integer>[] adjList;
+
+    // Constructor
+    BFSGraph(int v) {
+        vertices = v;
+        adjList = new LinkedList[v];
+
+        for (int i = 0; i < v; i++) {
+            adjList[i] = new LinkedList<Integer>();
+        }
+    }
+
+    // Add edge (undirected)
+    void addEdge(int v, int w) {
+        adjList[v].add(w);
+        adjList[w].add(v);
+    }
+
+    // BFS Traversal
+    void BFS(int startVertex) {
+        boolean[] visited = new boolean[vertices];
+
+        Queue<Integer> queue = new LinkedList<>();
+
+        visited[startVertex] = true;
+        queue.add(startVertex);
+
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            System.out.print(current + " ");
+
+            for (int neighbor : adjList[current]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.add(neighbor);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of vertices: ");
+        int v = sc.nextInt();
+
+        BFSGraph g = new BFSGraph(v);
+
+        System.out.print("Enter number of edges: ");
+        int e = sc.nextInt();
+
+        System.out.println("Enter edges (source destination):");
+        for (int i = 0; i < e; i++) {
+            int src = sc.nextInt();
+            int dest = sc.nextInt();
+            g.addEdge(src, dest);
+        }
+
+        System.out.print("Enter starting vertex: ");
+        int start = sc.nextInt();
+
+        System.out.println("BFS Traversal:");
+        g.BFS(start);
+
+        sc.close();
+    }
+}
