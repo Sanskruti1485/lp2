@@ -1,0 +1,36 @@
+# Depth First Search using recursion with user input
+
+def dfs(graph, node, visited):
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+
+        for neighbor in graph[node]:
+            dfs(graph, neighbor, visited)
+
+
+# Taking input from user
+graph = {}
+
+n = int(input("Enter number of vertices: "))
+
+for i in range(n):
+    vertex = input("Enter vertex name: ")
+    graph[vertex] = []
+
+m = int(input("Enter number of edges: "))
+
+print("Enter edges (vertex1 vertex2):")
+for i in range(m):
+    u, v = input().split()
+    
+    # Since graph is undirected
+    graph[u].append(v)
+    graph[v].append(u)
+
+start = input("Enter starting vertex: ")
+
+visited = set()
+
+print("DFS Traversal:")
+dfs(graph, start, visited)
