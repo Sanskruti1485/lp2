@@ -1,0 +1,74 @@
+def a_star(graph, heuristic, start, goal):
+    open_list = [start]
+    closed_list = set()
+
+    g = {start: 0}
+    parent = {start: None}
+
+    while open_list:
+        # Node with lowest f(n) = g(n) + h(n)
+        current = min(open_list, key=lambda x: g[x] + heuristic[x])
+
+        # Goal check
+        if current == goal:
+            path = []
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+            path.reverse()
+            print("Path found:", path)
+            return
+
+        open_list.remove(current)
+        closed_list.add(current)
+
+        for neighbor, cost in graph[current]:
+            if neighbor in closed_list:
+                continue
+
+            new_cost = g[current] + cost
+
+            if neighbor not in open_list:
+                open_list.append(neighbor)
+            elif new_cost >= g.get(neighbor, float('inf')):
+                continue
+
+            g[neighbor] = new_cost
+            parent[neighbor] = current
+
+    print("No path found")
+
+
+# -------- USER INPUT --------
+
+graph = {}
+
+n = int(input("Enter number of vertices: "))
+
+for i in range(n):
+    vertex = input("Enter vertex name: ")
+    graph[vertex] = []
+
+m = int(input("Enter number of edges: "))
+
+print("Enter edges (format: node1 node2 cost):")
+for i in range(m):
+    u, v, cost = input().split()
+    cost = int(cost)
+
+    # Undirected graph
+    graph[u].append((v, cost))
+    graph[v].append((u, cost))
+
+# Heuristic input
+heuristic = {}
+print("Enter heuristic values:")
+for vertex in graph:
+    h = int(input(f"h({vertex}) = "))
+    heuristic[vertex] = h
+
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+
+print("A* Path:")
+a_star(graph, heuristic, start, goal)
