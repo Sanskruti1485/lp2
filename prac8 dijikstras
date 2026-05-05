@@ -1,0 +1,60 @@
+import heapq
+
+def dijkstra(graph, start):
+    # Initialize distances
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+
+    # Priority queue (min-heap)
+    pq = [(0, start)]
+
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+
+        # Skip if we already found a better path
+        if current_dist > distances[current_node]:
+            continue
+
+        # Explore neighbors
+        for neighbor, weight in graph[current_node]:
+            distance = current_dist + weight
+
+            # Relaxation step
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
+
+
+# -------- USER INPUT --------
+
+graph = {}
+
+n = int(input("Enter number of vertices: "))
+print("Enter vertex names:")
+
+for i in range(n):
+    vertex = input()
+    graph[vertex] = []
+
+m = int(input("Enter number of edges: "))
+print("Enter edges (node1 node2 weight):")
+
+for i in range(m):
+    u, v, w = input().split()
+    w = int(w)
+
+    # Undirected graph
+    graph[u].append((v, w))
+    graph[v].append((u, w))
+
+start = input("Enter starting vertex: ")
+
+# Run algorithm
+distances = dijkstra(graph, start)
+
+# Output
+print("\nShortest distances from source:")
+for node in distances:
+    print(f"{start} -> {node} = {distances[node]}")
