@@ -1,0 +1,62 @@
+# Kruskal's Algorithm for Minimum Spanning Tree
+
+def find(parent, i):
+    if parent[i] != i:
+        return find(parent, parent[i])
+    return i
+
+def union(parent, rank, x, y):
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+
+    if rank[root_x] < rank[root_y]:
+        parent[root_x] = root_y
+    elif rank[root_x] > rank[root_y]:
+        parent[root_y] = root_x
+    else:
+        parent[root_y] = root_x
+        rank[root_x] += 1
+
+
+# -------- USER INPUT --------
+
+vertices = []
+n = int(input("Enter number of vertices: "))
+
+print("Enter vertex names:")
+for i in range(n):
+    vertices.append(input())
+
+index = {v: i for i, v in enumerate(vertices)}
+
+m = int(input("Enter number of edges: "))
+edges = []
+
+print("Enter edges (node1 node2 cost):")
+for i in range(m):
+    u, v, cost = input().split()
+    edges.append((int(cost), u, v))
+
+# Sort edges by cost (Greedy step)
+edges.sort()
+
+parent = [i for i in range(n)]
+rank = [0] * n
+
+mst = []
+total_cost = 0
+
+for cost, u, v in edges:
+    u_idx = index[u]
+    v_idx = index[v]
+
+    if find(parent, u_idx) != find(parent, v_idx):
+        mst.append((u, v, cost))
+        total_cost += cost
+        union(parent, rank, u_idx, v_idx)
+
+print("\nEdges in MST:")
+for u, v, cost in mst:
+    print(u, "-", v, ":", cost)
+
+print("Total cost of MST:", total_cost)
