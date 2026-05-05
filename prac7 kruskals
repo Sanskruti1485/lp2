@@ -1,0 +1,61 @@
+# Kruskal's Algorithm using Greedy Approach
+
+def find(parent, i):
+    if parent[i] != i:
+        parent[i] = find(parent, parent[i])   # Path Compression
+    return parent[i]
+
+def union(parent, rank, x, y):
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+
+    if rank[root_x] < rank[root_y]:
+        parent[root_x] = root_y
+    elif rank[root_x] > rank[root_y]:
+        parent[root_y] = root_x
+    else:
+        parent[root_y] = root_x
+        rank[root_x] += 1
+
+
+def kruskal(vertices, edges):
+    # Step 1: Sort edges by weight (Greedy step)
+    edges.sort(key=lambda x: x[2])
+
+    parent = list(range(vertices))
+    rank = [0] * vertices
+
+    mst = []
+    total_cost = 0
+
+    # Step 2: Pick smallest edge and avoid cycles
+    for u, v, weight in edges:
+        if find(parent, u) != find(parent, v):
+            union(parent, rank, u, v)
+            mst.append((u, v, weight))
+            total_cost += weight
+
+    return mst, total_cost
+
+
+# -------- USER INPUT --------
+
+vertices = int(input("Enter number of vertices: "))
+edges_count = int(input("Enter number of edges: "))
+
+edges = []
+print("Enter edges in format: u v weight (use vertex index like 0,1,2...)")
+
+for i in range(edges_count):
+    u, v, w = map(int, input().split())
+    edges.append((u, v, w))
+
+# Run algorithm
+mst, total_cost = kruskal(vertices, edges)
+
+# Output
+print("\nEdges in MST:")
+for u, v, w in mst:
+    print(f"{u} -- {v}  weight: {w}")
+
+print("Total Cost of MST:", total_cost)
