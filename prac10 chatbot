@@ -1,0 +1,79 @@
+import re
+import random
+from datetime import datetime
+
+class CustomerChatbot:
+    def __init__(self):
+        self.name = "ServiceBot"
+        self.responses = {
+            r"hello|hi|hey": [
+                "Hello! Welcome to our support center. How can I help you today?",
+                "Hi there! How may I assist you?",
+            ],
+            r"order|track|tracking": [
+                "Please provide your order ID and I'll look it up for you.",
+                "You can track your order at our website under 'My Orders'.",
+            ],
+            r"refund|return|money back": [
+                "Refunds are processed within 5-7 business days.",
+                "To initiate a return, please visit our Returns Center.",
+            ],
+            r"cancel|cancell": [
+                "Orders can be cancelled within 24 hours. Please share your order ID.",
+            ],
+            r"payment|pay|charge|bill": [
+                "We accept credit cards, debit cards, PayPal, and bank transfers.",
+                "If you see an unexpected charge, please share your order ID and we'll investigate.",
+            ],
+            r"shipping|delivery|deliver": [
+                "Standard shipping takes 5-7 days. Express takes 2-3 days.",
+                "Free shipping is available on orders above $50.",
+            ],
+            r"password|login|account": [
+                "To reset your password, click 'Forgot Password' on login page.",
+                "For account issues, provide your registered email.",
+            ],
+            r"hours|timing|open": [
+                lambda: f"Our support is available Mon-Fri, 9AM-6PM. Current time: {datetime.now().strftime('%H:%M')}"
+            ],
+            r"thank|thanks": [
+                "You're welcome! Anything else I can help with?",
+            ],
+            r"bye|exit|quit": [
+                "Goodbye! Thank you for contacting us.",
+            ],
+        }
+
+        self.default_responses = [
+            "Sorry, I didn't understand that.",
+            "Please rephrase your query.",
+            "Contact support at 1-800-123-4567.",
+        ]
+
+    def get_response(self, user_input):
+        user_input = user_input.lower()
+
+        for pattern, responses in self.responses.items():
+            if re.search(pattern, user_input):
+                resp = random.choice(responses)
+                return resp() if callable(resp) else resp
+
+        return random.choice(self.default_responses)
+
+    def chat(self):
+        print("\n===== Customer Support Chatbot =====")
+        print("Type 'bye' to exit\n")
+
+        while True:
+            user_input = input("You: ")
+
+            response = self.get_response(user_input)
+            print("Bot:", response)
+
+            if re.search(r"bye|exit|quit", user_input.lower()):
+                break
+
+
+# Run chatbot
+bot = CustomerChatbot()
+bot.chat()
