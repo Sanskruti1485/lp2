@@ -1,0 +1,62 @@
+# Prim's Algorithm for Minimum Spanning Tree
+
+def prims(graph, start):
+    visited = set([start])
+    mst = []
+    total_cost = 0
+
+    while len(visited) < len(graph):
+        min_edge = None
+        min_cost = float('inf')
+
+        # Find minimum weight edge from visited to unvisited
+        for u in visited:
+            for v, cost in graph[u]:
+                if v not in visited and cost < min_cost:
+                    min_cost = cost
+                    min_edge = (u, v)
+
+        if min_edge is None:
+            break
+
+        u, v = min_edge
+        mst.append((u, v, min_cost))
+        total_cost += min_cost
+        visited.add(v)
+
+    return mst, total_cost
+
+
+# -------- USER INPUT --------
+
+graph = {}
+
+n = int(input("Enter number of vertices: "))
+print("Enter vertex names:")
+
+for i in range(n):
+    vertex = input()
+    graph[vertex] = []
+
+m = int(input("Enter number of edges: "))
+print("Enter edges in format: node1 node2 cost")
+
+for i in range(m):
+    u, v, cost = input().split()
+    cost = int(cost)
+
+    # Undirected graph
+    graph[u].append((v, cost))
+    graph[v].append((u, cost))
+
+start = input("Enter starting vertex: ")
+
+# Run algorithm
+mst, total_cost = prims(graph, start)
+
+# Output
+print("\nEdges in MST:")
+for u, v, cost in mst:
+    print(u, "--", v, "weight:", cost)
+
+print("Total Cost of MST:", total_cost)
